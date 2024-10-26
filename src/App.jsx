@@ -4,9 +4,11 @@ import CharacterDetail from "./components/CharacterDetail";
 import CharacterList from "./components/CharacterList";
 import Navbar, { SearchResult } from "./components/Navbar";
 import { useEffect, useState } from "react";
+import Loader from "./components/Loader";
 
 function App() {
   const [characters, setCharacters] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // NOT TO FETCH IN THIS WAY :
   // fetch("https://rickandmortyapi.com/api/character")
@@ -26,9 +28,11 @@ function App() {
   // useEffect hook on mount phase - first load with async await
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       const res = await fetch("https://rickandmortyapi.com/api/character");
       const data = await res.json();
       setCharacters(data.results);
+      setIsLoading(true);
     }
     fetchData();
   }, []);
@@ -58,7 +62,13 @@ function App() {
         <SearchResult numOfResult={characters.length} />
       </Navbar>
       <Main>
-        <CharacterList characters={characters} />
+        {isLoading ? (
+          <div className="characters-list">
+            <Loader />
+          </div>
+        ) : (
+          <CharacterList characters={characters} />
+        )}
         <CharacterDetail />
       </Main>
     </div>
