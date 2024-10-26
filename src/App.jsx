@@ -3,12 +3,38 @@ import { allCharacters } from "../data/data";
 import CharacterDetail from "./components/CharacterDetail";
 import CharacterList from "./components/CharacterList";
 import Navbar, { SearchResult } from "./components/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [characters, setCharacters] = useState(allCharacters);
+  const [characters, setCharacters] = useState([]);
+
+  // NOT TO FETCH IN THIS WAY :
+  // fetch("https://rickandmortyapi.com/api/character")
+  //   .then((res) => res.json())
+  //   .then((data) => setCharacters(data.results));
+
+  // fetch api, set timer, access to DOM, ...
+  // effect : event handle function, useEffect
+
+  // useEffect hook on mount phase - first load
+  useEffect(() => {
+    fetch("https://rickandmortyapi.com/api/character")
+      .then((res) => res.json())
+      .then((data) => setCharacters(data.results));
+  }, []);
+
+  //  event side effect
+  const handleLoadCharacter = () => {
+    fetch("https://rickandmortyapi.com/api/character")
+      .then((res) => res.json())
+      .then((data) => setCharacters(data.results.slice(0, 3)));
+  };
+
   return (
-    <div>
+    <div className="app">
+      <button onClick={handleLoadCharacter} className="load-characters-btn">
+        load just first "3" characters
+      </button>
       <Navbar>
         <SearchResult numOfResult={characters.length} />
       </Navbar>
