@@ -103,11 +103,11 @@ function App() {
   //   fetchData();
   // };
   const handleSelectCharacter = (id) => {
-    setSelectedId(id);
+    setSelectedId((prevId) => (prevId === id ? null : id));
   };
 
   console.log(selectedId);
-  
+
   return (
     <div className="app">
       <Toaster />
@@ -127,6 +127,7 @@ function App() {
           <CharacterList
             characters={characters}
             onSelectCharacter={handleSelectCharacter}
+            selectedId={selectedId}
           />
         )}
         <CharacterDetail selectedId={selectedId} />

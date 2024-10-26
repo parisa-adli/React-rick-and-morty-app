@@ -25,7 +25,7 @@ function CharacterDetail({ selectedId }) {
         setIsLoading(false);
       }
     }
-    if (selectedId) fetchData(); // dont' request to null address -> https://rickandmortyapi.com/api/character/null
+    if (selectedId) fetchData(); // dont' request to null address -> https://rickandmortyapi.com/api/charactes
   }, [selectedId]);
 
   if (isLoading)
