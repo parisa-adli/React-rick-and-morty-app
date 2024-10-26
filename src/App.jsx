@@ -106,7 +106,7 @@ function App() {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
 
-  console.log(selectedId);
+  // console.log(selectedId);
 
   return (
     <div className="app">

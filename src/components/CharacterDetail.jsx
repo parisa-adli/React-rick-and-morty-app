@@ -8,6 +8,7 @@ import axios from "axios";
 function CharacterDetail({ selectedId }) {
   const [character, setCharacter] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -18,14 +19,21 @@ function CharacterDetail({ selectedId }) {
           `https://rickandmortyapi.com/api/character/${selectedId}`
         );
         setCharacter(data);
+        console.log(data.episode.map((e) => e.split("/").at(-1)));
+
+        const episodesId = data.episode.map((e) => e.split("/").at(-1)); // number of episode the character has been on ['1','2','10']
+        const { data: episodesData } = await axios.get(
+          `https://rickandmortyapi.com/api/episode/${episodesId}`
+        );
+        setEpisodes([episodesData].flat()); // flat -> [1,2,[3]] => [1,2,3]
+        console.log(episodesData);
       } catch (error) {
         toast.error(error.response.data.error);
-        console.log(error);
       } finally {
         setIsLoading(false);
       }
     }
-    if (selectedId) fetchData(); // dont' request to null address -> https://rickandmortyapi.com/api/charactes
+    if (selectedId) fetchData(); // dont' request to null address -> https://rickandmortyapi.com/api/character/null
   }, [selectedId]);
 
   if (isLoading)
@@ -59,7 +67,7 @@ function CharacterDetail({ selectedId }) {
             <span
               className={`status ${character.status === "Dead" ? "red" : ""}`}
             ></span>
-            <span>{character.status}</span>
+            <span>&nbsp;{character.status}</span>
             <span>{character.species}</span>
           </div>
           <div className="location">
