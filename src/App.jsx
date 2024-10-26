@@ -5,6 +5,7 @@ import CharacterList from "./components/CharacterList";
 import Navbar, { SearchResult } from "./components/Navbar";
 import { useEffect, useState } from "react";
 import Loader from "./components/Loader";
+import toast, { Toaster } from "react-hot-toast";
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -18,21 +19,33 @@ function App() {
   // fetch api, set timer, access to DOM, ...
   // effect : event handle function, useEffect
 
-  // useEffect hook on mount phase - first load with then catch
-  useEffect(() => {
-    fetch("https://rickandmortyapi.com/api/character")
-      .then((res) => res.json())
-      .then((data) => setCharacters(data.results));
-  }, []);
+  //   // useEffect hook on mount phase - first load with then catch
+  //   useEffect(() => {
+  //     setIsLoading(true);
 
-  // useEffect hook on mount phase - first load with async await
+  //     fetch("https://rickandmortyapi.com/api/character")
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setCharacters(data.results))
+  //     setIsLoading(true)
+  //   });
+  // }, []);
+
+  // // useEffect hook on mount phase - first load with async await
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true);
-      const res = await fetch("https://rickandmortyapi.com/api/character");
-      const data = await res.json();
-      setCharacters(data.results);
-      setIsLoading(true);
+      try {
+        setIsLoading(true);
+        const res = await fetch("https://rickandmortyapi.com/api/character");
+        if (!res.ok) throw new Error("somthing went wrong!");
+        const data = await res.json();
+        setCharacters(data.results);
+      } catch (err) {
+        console.log(err.message);
+        toast.error(err.message);
+      } finally {
+        setIsLoading(false);
+      }
     }
     fetchData();
   }, []);
@@ -45,19 +58,21 @@ function App() {
   // };
 
   // //  event side effect with async await
-  const handleLoadCharacter = () => {
-    async function fetchData() {
-      const res = await fetch("https://rickandmortyapi.com/api/character");
-      const data = await res.json();
-      setCharacters(data.results.slice(0, 4));
-    }
-    fetchData();
-  };
+  // const handleLoadCharacter = () => {
+  //   async function fetchData() {
+  //     const res = await fetch("https://rickandmortyapi.com/api/character");
+  //     const data = await res.json();
+  //     setCharacters(data.results.slice(0, 4));
+  //   }
+  //   fetchData();
+  // };
+  
   return (
     <div className="app">
-      <button onClick={handleLoadCharacter} className="load-characters-btn">
+      <Toaster />
+      {/* <button onClick={handleLoadCharacter} className="load-characters-btn">
         load just first "3" characters
-      </button>
+      </button> */}
       <Navbar>
         <SearchResult numOfResult={characters.length} />
       </Navbar>
