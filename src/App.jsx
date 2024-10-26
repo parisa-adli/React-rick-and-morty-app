@@ -16,20 +16,39 @@ function App() {
   // fetch api, set timer, access to DOM, ...
   // effect : event handle function, useEffect
 
-  // useEffect hook on mount phase - first load
+  // useEffect hook on mount phase - first load with then catch
   useEffect(() => {
     fetch("https://rickandmortyapi.com/api/character")
       .then((res) => res.json())
       .then((data) => setCharacters(data.results));
   }, []);
 
-  //  event side effect
-  const handleLoadCharacter = () => {
-    fetch("https://rickandmortyapi.com/api/character")
-      .then((res) => res.json())
-      .then((data) => setCharacters(data.results.slice(0, 3)));
-  };
+  // useEffect hook on mount phase - first load with async await
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch("https://rickandmortyapi.com/api/character");
+      const data = await res.json();
+      setCharacters(data.results);
+    }
+    fetchData();
+  }, []);
 
+  // //  event side effect
+  // const handleLoadCharacter = () => {
+  //   fetch("https://rickandmortyapi.com/api/character")
+  //     .then((res) => res.json())
+  //     .then((data) => setCharacters(data.results.slice(0, 3)));
+  // };
+
+  // //  event side effect with async await
+  const handleLoadCharacter = () => {
+    async function fetchData() {
+      const res = await fetch("https://rickandmortyapi.com/api/character");
+      const data = await res.json();
+      setCharacters(data.results.slice(0, 4));
+    }
+    fetchData();
+  };
   return (
     <div className="app">
       <button onClick={handleLoadCharacter} className="load-characters-btn">
