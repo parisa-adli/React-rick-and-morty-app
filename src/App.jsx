@@ -2,7 +2,7 @@ import "./App.css";
 import { allCharacters } from "../data/data";
 import CharacterDetail from "./components/CharacterDetail";
 import CharacterList from "./components/CharacterList";
-import Navbar, { SearchResult } from "./components/Navbar";
+import Navbar, { Search, SearchResult } from "./components/Navbar";
 import { useEffect, useState } from "react";
 import Loader from "./components/Loader";
 import toast, { Toaster } from "react-hot-toast";
@@ -11,6 +11,7 @@ import axios from "axios";
 function App() {
   const [characters, setCharacters] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState("");
 
   // NOT TO FETCH IN THIS WAY :
   // fetch("https://rickandmortyapi.com/api/character")
@@ -57,7 +58,7 @@ function App() {
       try {
         setIsLoading(true);
         const { data } = await axios.get(
-          "https://rickandmortyapi.com/api/character"
+          `https://rickandmortyapi.com/api/character?name=${query}`
         );
         setCharacters(data.results);
       } catch (err) {
@@ -67,7 +68,22 @@ function App() {
       }
     }
     fetchData();
-  }, []);
+  }, [query]);
+
+  // dependency array ? rule => when to run effect function
+
+  // 1. useEffect(()=>{}) --> on every render --> not control
+  // 2. useEffect(()=>{},[]) --> on mount - first load(render)
+  // 3. useEffect(()=>{},[state, props]) --> changes state or props
+
+  // useEffect(()=>{
+  // if(query)
+  // }, [query]) --> when query changes(update) effect function run
+
+  // when useEffect runs. ??
+
+  // (1) state => changes -> re-render -> browser paint
+  // (2) state => changes -> run effect function
 
   // //  event side effect
   // const handleLoadCharacter = () => {
@@ -93,6 +109,7 @@ function App() {
         load just first "3" characters
       </button> */}
       <Navbar>
+        <Search query={query} setQuery={setQuery} />
         <SearchResult numOfResult={characters.length} />
       </Navbar>
       <Main>
