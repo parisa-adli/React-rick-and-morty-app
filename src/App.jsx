@@ -2,7 +2,7 @@ import "./App.css";
 import { allCharacters } from "../data/data";
 import CharacterDetail from "./components/CharacterDetail";
 import CharacterList from "./components/CharacterList";
-import Navbar, { Search, SearchResult } from "./components/Navbar";
+import Navbar, { Favourites, Search, SearchResult } from "./components/Navbar";
 import { useEffect, useState } from "react";
 import Loader from "./components/Loader";
 import toast, { Toaster } from "react-hot-toast";
@@ -13,6 +13,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
+  const [favourites, setFavourites] = useState([]);
 
   // NOT TO FETCH IN THIS WAY :
   // fetch("https://rickandmortyapi.com/api/character")
@@ -106,6 +107,12 @@ function App() {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
 
+  const handleAddFavourite = (char) => {
+    setFavourites((prevFav) => [...prevFav, char]);
+  };
+
+  const isAddToFavourite = favourites.map((fav) => fav.id).includes(selectedId);
+
   // console.log(selectedId);
 
   return (
@@ -117,6 +124,7 @@ function App() {
       <Navbar>
         <Search query={query} setQuery={setQuery} />
         <SearchResult numOfResult={characters.length} />
+        <Favourites numOfFavourites={favourites.length} />
       </Navbar>
       <Main>
         {isLoading ? (
@@ -130,7 +138,11 @@ function App() {
             selectedId={selectedId}
           />
         )}
-        <CharacterDetail selectedId={selectedId} />
+        <CharacterDetail
+          selectedId={selectedId}
+          onAddFavourite={handleAddFavourite}
+          isAddToFavourite={isAddToFavourite}
+        />
       </Main>
     </div>
   );
