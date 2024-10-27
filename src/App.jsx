@@ -15,6 +15,27 @@ function App() {
   const [selectedId, setSelectedId] = useState(null);
   const [favourites, setFavourites] = useState([]);
 
+  // const [count, setCount] = useState(0);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => setCount((c) => c + 1), 1000);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [count]);
+
+  //* clean up function
+  // what?
+  // why to use?
+  // when run?
+  // 1. unmount component
+  // 2. befor the next re-render (between re-renders)
+  // where to use?
+  // effect => after unmount or while re-rendering
+  // example :
+  // fetch API, timer, eventListener,...
+
   // NOT TO FETCH IN THIS WAY :
   // fetch("https://rickandmortyapi.com/api/character")
   //   .then((res) => res.json())
@@ -54,7 +75,25 @@ function App() {
   //   fetchData();
   // }, []);
 
+  // //  event side effect
+  // const handleLoadCharacter = () => {
+  //   fetch("https://rickandmortyapi.com/api/character")
+  //     .then((res) => res.json())
+  //     .then((data) => setCharacters(data.results.slice(0, 3)));
+  // };
+
+  // //  event side effect with async await
+  // const handleLoadCharacter = () => {
+  //   async function fetchData() {
+  //     const res = await fetch("https://rickandmortyapi.com/api/character");
+  //     const data = await res.json();
+  //     setCharacters(data.results.slice(0, 4));
+  //   }
+  //   fetchData();
+  // };
+
   // // useEffect hook on mount phase - first load with axios
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -69,6 +108,11 @@ function App() {
         setIsLoading(false);
       }
     }
+    // don't show character before serch by name
+    // if (query.length < 3) {
+    //   setCharacters([]);
+    //   return;
+    // }
     fetchData();
   }, [query]);
 
@@ -87,22 +131,6 @@ function App() {
   // (1) state => changes -> re-render -> browser paint
   // (2) state => changes -> run effect function
 
-  // //  event side effect
-  // const handleLoadCharacter = () => {
-  //   fetch("https://rickandmortyapi.com/api/character")
-  //     .then((res) => res.json())
-  //     .then((data) => setCharacters(data.results.slice(0, 3)));
-  // };
-
-  // //  event side effect with async await
-  // const handleLoadCharacter = () => {
-  //   async function fetchData() {
-  //     const res = await fetch("https://rickandmortyapi.com/api/character");
-  //     const data = await res.json();
-  //     setCharacters(data.results.slice(0, 4));
-  //   }
-  //   fetchData();
-  // };
   const handleSelectCharacter = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
@@ -117,6 +145,7 @@ function App() {
 
   return (
     <div className="app">
+      {/* <div style={{ color: "#FFF", marginBottom: "5rem" }}>{count}</div> */}
       <Toaster />
       {/* <button onClick={handleLoadCharacter} className="load-characters-btn">
         load just first "3" characters
