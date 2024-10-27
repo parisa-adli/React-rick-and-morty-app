@@ -165,11 +165,11 @@ function App() {
       {/* <button onClick={handleLoadCharacter} className="load-characters-btn">
         load just first "3" characters
       </button> */}
-      <Modal title="test modal" open={true} />
+      {/* <Modal title="test modal" open={true} /> */}
       <Navbar>
         <Search query={query} setQuery={setQuery} />
         <SearchResult numOfResult={characters.length} />
-        <Favourites numOfFavourites={favourites.length} />
+        <Favourites favourites={favourites} />
       </Navbar>
       <Main>
         {isLoading ? (
