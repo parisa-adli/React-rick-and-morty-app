@@ -95,15 +95,26 @@ function App() {
   // // useEffect hook on mount phase - first load with axios
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     async function fetchData() {
       try {
         setIsLoading(true);
         const { data } = await axios.get(
-          `https://rickandmortyapi.com/api/character?name=${query}`
+          `https://rickandmortyapi.com/api/character?name=${query}`,
+          { signal }
         );
-        setCharacters(data.results);
+        setCharacters(data.results.slice(0, 5));
       } catch (err) {
-        toast.error(err.response.data.error);
+        // fetch => err.name === "AbortError"
+        // => if (err.name !== "AbortError"){}
+        // axios => axios.isCancel()
+        // =>
+        if (!axios.isCancel()) {
+          setCharacters([]);
+          toast.error(err.response.data.error);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -114,6 +125,9 @@ function App() {
     //   return;
     // }
     fetchData();
+    return () => {
+      controller.abort();
+    };
   }, [query]);
 
   // dependency array ? rule => when to run effect function
