@@ -157,7 +157,9 @@ function App() {
   const isAddToFavourite = favourites.map((fav) => fav.id).includes(selectedId);
 
   // console.log(selectedId);
-
+  const handleDeleteFavourite = (id) => {
+    setFavourites((prevFav) => prevFav.filter((fav) => fav.id !== id));
+  };
   return (
     <div className="app">
       {/* <div style={{ color: "#FFF", marginBottom: "5rem" }}>{count}</div> */}
@@ -169,7 +171,10 @@ function App() {
       <Navbar>
         <Search query={query} setQuery={setQuery} />
         <SearchResult numOfResult={characters.length} />
-        <Favourites favourites={favourites} />
+        <Favourites
+          favourites={favourites}
+          onDeleteFavourite={handleDeleteFavourite}
+        />
       </Navbar>
       <Main>
         {isLoading ? (
