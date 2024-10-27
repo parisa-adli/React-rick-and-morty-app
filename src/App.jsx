@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Loader from "./components/Loader";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import Modal from "./components/Modal";
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -164,6 +165,7 @@ function App() {
       {/* <button onClick={handleLoadCharacter} className="load-characters-btn">
         load just first "3" characters
       </button> */}
+      <Modal title="test modal" open={true} />
       <Navbar>
         <Search query={query} setQuery={setQuery} />
         <SearchResult numOfResult={characters.length} />
