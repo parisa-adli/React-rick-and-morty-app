@@ -39,6 +39,8 @@ button {
   color: var(--slate-100);
   background-color: var(--slate-500);
   font-size: 1.1rem;
+  min-width: 150px;
+  margin-right: 1rem;
 }
 
 .text-field::placeholder {
@@ -75,9 +77,9 @@ button {
 }
 
 .modal {
-  width: 98%;
+  width: calc(100% - 2rem);
   min-height: 250px;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -109,16 +111,18 @@ button {
   color: var(--slate-200);
 }
 
-@media (min-width: 768px) {
+.backdrop {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(63, 69, 76, 0.8);
+}
+
+@media screen and (min-width: 550px) {
   .modal {
     max-width: 30rem;
   }
 }
 
-.backdrop {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  inset: 0;
-  background-color: rgba(63, 69, 76, 0.8);
-}
+

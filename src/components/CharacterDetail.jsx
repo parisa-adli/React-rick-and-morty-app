@@ -131,7 +131,7 @@ function EpisodeList({ episodes }) {
       </div>
       <ul>
         {sortedEpisodes.map((item, index) => (
-          <li key={item.id}>
+          <li key={item.id} data-full-text={item.name}>
             <div>
               {String(index + 1).padStart(2, "0")} - {item.episode} :&nbsp;
               <strong>{item.name}</strong>

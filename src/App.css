@@ -2,7 +2,8 @@
   margin: 0 auto;
   max-width: 1280px;
   position: relative;
-  padding: 2rem;
+  width: calc(100% - 2rem);
+  height: calc(100% - 2rem);
 }
 
 .navbar {
@@ -12,7 +13,7 @@
   background-color: var(--slate-700);
   padding: 1rem;
   border-radius: 1rem;
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 }
 
 .navbar__logo {
@@ -132,8 +133,8 @@
   flex-direction: column;
   background-color: var(--slate-800);
   overflow: hidden;
-  border-radius: 0.5rem;
-  margin-bottom: 2rem;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
 }
 
 .character-detail__img {
@@ -225,7 +226,7 @@
   margin-bottom: 1rem;
 }
 
-@media (min-width: 768px) {
+@media screen and (min-width: 768px) {
   .character-detail {
     flex-direction: row;
   }
@@ -234,5 +235,74 @@
   }
   .character-detail__info .actions {
     flex-direction: row;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .navbar__logo,
+  .navbar-result {
+    display: none;
+  }
+  .navbar .heart {
+    z-index: -10;
+  }
+  .main {
+    flex-direction: column;
+  }
+  .characters-list {
+    width: 100%;
+  }
+  .modal {
+    height: calc(100% - 2rem);
+    overflow: scroll;
+    max-height: 20rem;
+    scrollbar-width: none;
+  }
+  .list__item {
+    font-size: 0.8rem;
+  }
+  .character-episodes li {
+    position: relative;
+  }
+  .character-episodes li > div {
+    min-width: 120px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .character-episodes li:hover::after {
+    content: attr(data-full-text);
+    position: absolute;
+    left: 0;
+    top: 25px;
+    padding: 5px;
+    color: var(--slate-400);
+    background-color: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 5px;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  .character-episodes li .badge {
+    font-size: 0.58rem;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 768px) {
+  .navbar__logo {
+    display: block;
+  }
+  .list__item {
+    font-size: 1rem;
+  }
+  .character-episodes li .badge {
+    font-size: 0.8rem;
   }
 }

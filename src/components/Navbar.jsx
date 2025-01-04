@@ -5,7 +5,7 @@ import Modal from "./Modal";
 function Navbar({ children }) {
   return (
     <nav className="navbar">
-      <div className="navbar-logo">LOGO 😍</div>
+      <div className="navbar__logo">LOGO 😍</div>
       {children}
     </nav>
   );
