@@ -1,22 +1,26 @@
+import { useEffect, useState } from "react";
 import "./App.css";
-import { allCharacters } from "../data/data";
 import CharacterDetail from "./components/CharacterDetail";
 import CharacterList from "./components/CharacterList";
-import Navbar, { Favourites, Search, SearchResult } from "./components/Navbar";
-import { useEffect, useState } from "react";
+import Navbar, {
+  SearchResult,
+  ShowResult,
+  Search,
+  Favourites,
+} from "./components/Navbar";
 import Loader from "./components/Loader";
-import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
-import Modal from "./components/Modal";
+import { Toaster } from "react-hot-toast";
+import useCharacters from "./hooks/useCharacters";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
-  const [characters, setCharacters] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
-  const [favourites, setFavourites] = useState(
-    () => JSON.parse(localStorage.getItem("FAVOURITES")) || []
+  const { isLoading, characters } = useCharacters(
+    "https://rickandmortyapi.com/api/character?name=",
+    query
   );
+  const [selectedId, setSelectedId] = useState(null);
+  const [favourite, setFavourite] = useLocalStorage("FAVOURITES", []);
 
   // const [count, setCount] = useState(0);
 
@@ -47,91 +51,56 @@ function App() {
   // fetch api, set timer, access to DOM, ...
   // effect : event handle function, useEffect
 
-  //   // useEffect hook on mount phase - first load with then catch
-  //   useEffect(() => {
-  //     setIsLoading(true);
-
-  //     fetch("https://rickandmortyapi.com/api/character")
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         setCharacters(data.results))
-  //     setIsLoading(true)
-  //   });
-  // }, []);
-
-  // // useEffect hook on mount phase - first load with async await
+  // // first load - mount phase with then catch
   // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       setIsLoading(true);
-  //       const res = await fetch("https://rickandmortyapi.com/api/character");
-  //       if (!res.ok) throw new Error("somthing went wrong!");
-  //       const data = await res.json();
-  //       setCharacters(data.results);
-  //     } catch (err) {
-  //       console.log(err.message);
+  //   setIsLoding(true);
+  //   fetch("https://rickandmortyapi.com/api/character")
+  //     .then((res) => {
+  //       if (!res.ok) throw new Error("Somthing went wrong!!");
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       setCharacters(data.results.slice(0, 4));
+  //       // setIsLoding(false);
+  //     })
+  //     .catch((err) => {
+  //       // setIsLoding(false);
   //       toast.error(err.message);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   }
-  //   fetchData();
+  //     })
+  //     .finally(() => setIsLoding(false));
   // }, []);
 
-  // //  event side effect
+  // // event side effect  with then catch
   // const handleLoadCharacter = () => {
   //   fetch("https://rickandmortyapi.com/api/character")
   //     .then((res) => res.json())
   //     .then((data) => setCharacters(data.results.slice(0, 3)));
   // };
 
-  // //  event side effect with async await
-  // const handleLoadCharacter = () => {
+  // first load - mount phase with async await
+  // useEffect(() => {
   //   async function fetchData() {
-  //     const res = await fetch("https://rickandmortyapi.com/api/character");
-  //     const data = await res.json();
-  //     setCharacters(data.results.slice(0, 4));
+  //     try {
+  //       setIsLoding(true);
+  //       const res = await fetch("https://rickandmortyapi.com/api/character11");
+
+  //       if (!res.ok) throw new Error("Somthing went wrong!");
+
+  //       const data = await res.json();
+  //       setCharacters(data.results.slice(0, 4));
+  //       //setIsLoding(false);
+  //     } catch (err) {
+  //       //setIsLoding(false);
+  //       console.log(err.message);
+  //       toast.error(err.message);
+  //     } finally {
+  //       setIsLoding(false);
+  //     }
   //   }
   //   fetchData();
-  // };
+  // }, []);
 
-  // // useEffect hook on mount phase - first load with axios
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        const { data } = await axios.get(
-          `https://rickandmortyapi.com/api/character?name=${query}`,
-          { signal }
-        );
-        setCharacters(data.results.slice(0, 5));
-      } catch (err) {
-        // fetch => err.name === "AbortError"
-        // => if (err.name !== "AbortError"){}
-        // axios => axios.isCancel()
-        // =>
-        if (!axios.isCancel()) {
-          setCharacters([]);
-          toast.error(err.response.data.error);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    // don't show character before serch by name
-    // if (query.length < 3) {
-    //   setCharacters([]);
-    //   return;
-    // }
-    fetchData();
-    return () => {
-      controller.abort();
-    };
-  }, [query]);
+  // axios
 
   // dependency array ? rule => when to run effect function
 
@@ -148,38 +117,50 @@ function App() {
   // (1) state => changes -> re-render -> browser paint
   // (2) state => changes -> run effect function
 
-  useEffect(() => {
-    localStorage.setItem("FAVOURITES", JSON.stringify(favourites));
-  }, [favourites]);
+  // event side effect with async await
+
+  //?
+  // const handleLoadCharacter = () => {
+  //   async function fetchData() {
+  //     const res = await fetch(
+  //       `https://rickandmortyapi.com/api/character?name=${query}`
+  //     );
+  //     const data = await res.json();
+  //     setCharacters(data.results.slice(0, 3));
+  //   }
+  //   fetchData();
+  // };
 
   const handleSelectCharacter = (id) => {
-    setSelectedId((prevId) => (prevId === id ? null : id));
+    setSelectedId((prevId) => (prevId === id ? null : id)); // click on character is selected => on selecte
   };
+  // console.log(selectedId);
 
   const handleAddFavourite = (char) => {
-    setFavourites((prevFav) => [...prevFav, char]);
+    setFavourite((prevFav) => [...prevFav, char]);
   };
 
-  const isAddToFavourite = favourites.map((fav) => fav.id).includes(selectedId);
+  const isAddToFavourite = favourite.map((fav) => fav.id).includes(selectedId); // [1,2,3,...]
 
-  // console.log(selectedId);
-  const handleDeleteFavourite = (id) => {
-    setFavourites((prevFav) => prevFav.filter((fav) => fav.id !== id));
+  const handleDeleteFvourite = (id) => {
+    setFavourite((prevFav) => prevFav.filter((fav) => fav.id !== id));
   };
+
   return (
     <div className="app">
-      {/* <div style={{ color: "#FFF", marginBottom: "5rem" }}>{count}</div> */}
+      {/* <div style={{ color: "#FFF", marginBottom: "50rem" }}>{count}</div> */}
       <Toaster />
       {/* <button onClick={handleLoadCharacter} className="load-characters-btn">
         load just first "3" characters
       </button> */}
-      {/* <Modal title="test modal" open={true} /> */}
       <Navbar>
         <Search query={query} setQuery={setQuery} />
-        <SearchResult numOfResult={characters.length} />
+        <SearchResult>
+          <ShowResult numOfResult={characters.length} />
+        </SearchResult>
         <Favourites
-          favourites={favourites}
-          onDeleteFavourite={handleDeleteFavourite}
+          favourite={favourite}
+          onDeleteFavourite={handleDeleteFvourite}
         />
       </Navbar>
       <Main>
@@ -203,7 +184,6 @@ function App() {
     </div>
   );
 }
-
 export default App;
 
 function Main({ children }) {
